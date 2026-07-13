@@ -91,6 +91,13 @@ const elements = {
   soundButtons: [...document.querySelectorAll(".sound-toggle")]
 };
 
+elements.fullscreenToggle = document.querySelector("#fullscreen-toggle");
+elements.fullscreenHint = document.querySelector("#fullscreen-hint");
+elements.fullscreenHintButton = document.querySelector("#fullscreen-hint-button");
+elements.fullscreenHintClose = document.querySelector("#fullscreen-hint-close");
+
+let fullscreenHintDismissed = false;
+
 function shuffle(items) {
   const result = [...items];
   for (let index = result.length - 1; index > 0; index -= 1) {
@@ -472,6 +479,57 @@ function updateSoundButtons() {
   });
 }
 
+function getFullscreenElement() {
+  return document.fullscreenElement || document.webkitFullscreenElement || null;
+}
+
+function fullscreenIsSupported() {
+  return Boolean(
+    document.fullscreenEnabled ||
+    document.webkitFullscreenEnabled ||
+    document.documentElement.requestFullscreen ||
+    document.documentElement.webkitRequestFullscreen
+  );
+}
+
+async function toggleFullscreen() {
+  if (!fullscreenIsSupported()) return;
+  try {
+    if (getFullscreenElement()) {
+      const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exitFullscreen) await exitFullscreen.call(document);
+    } else {
+      const requestFullscreen = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+      if (requestFullscreen) {
+        await requestFullscreen.call(document.documentElement);
+        fullscreenHintDismissed = true;
+      }
+    }
+  } catch {
+    elements.fullscreenHint.querySelector("span").textContent = "Fullscreen kon niet worden geopend. Gebruik de fullscreenknop van je browser.";
+    elements.fullscreenHint.hidden = false;
+  }
+  updateFullscreenUI();
+}
+
+function updateFullscreenUI() {
+  const supported = fullscreenIsSupported();
+  const isFullscreen = Boolean(getFullscreenElement());
+  elements.fullscreenToggle.hidden = !supported;
+  elements.fullscreenToggle.setAttribute("aria-pressed", String(isFullscreen));
+  elements.fullscreenToggle.setAttribute("aria-label", isFullscreen ? "Fullscreen afsluiten" : "Fullscreen openen");
+  elements.fullscreenToggle.querySelector(".fullscreen-label").textContent = isFullscreen ? "Fullscreen uit" : "Fullscreen";
+  elements.fullscreenToggle.querySelector(".fullscreen-icon").textContent = isFullscreen ? "×" : "⛶";
+  elements.fullscreenHint.hidden = !supported || isFullscreen || fullscreenHintDismissed;
+}
+
+function isTypingTarget(target) {
+  return target instanceof HTMLElement && (
+    target.matches("input, textarea, select") ||
+    target.isContentEditable
+  );
+}
+
 function playSound(name) {
   if (!gameConfig.useSound || !state.soundEnabled) return;
   /* Eerst kan een lokaal bestand worden gebruikt. Bij ontbreken klinkt een korte Web Audio-toon. */
@@ -514,6 +572,27 @@ document.querySelector("#continue-button").addEventListener("click", () => eleme
 document.querySelectorAll('input[name="pair-count"]').forEach((input) => input.addEventListener("change", updateBestScore));
 document.querySelectorAll('input[name="game-mode"]').forEach((input) => input.addEventListener("change", updateModeControls));
 elements.soundButtons.forEach((button) => button.addEventListener("click", toggleSound));
+elements.fullscreenToggle.addEventListener("click", toggleFullscreen);
+elements.fullscreenHintButton.addEventListener("click", toggleFullscreen);
+elements.fullscreenHintClose.addEventListener("click", () => {
+  fullscreenHintDismissed = true;
+  elements.fullscreenHint.hidden = true;
+});
+
+document.addEventListener("keydown", (event) => {
+  if (
+    event.key.toLowerCase() !== "f" ||
+    event.repeat ||
+    event.altKey || event.ctrlKey || event.metaKey ||
+    isTypingTarget(event.target) ||
+    document.querySelector("dialog[open]")
+  ) return;
+  event.preventDefault();
+  toggleFullscreen();
+});
+
+document.addEventListener("fullscreenchange", updateFullscreenUI);
+document.addEventListener("webkitfullscreenchange", updateFullscreenUI);
 
 document.addEventListener("click", (event) => {
   const home = event.target.closest('[data-action="home"]');
@@ -553,6 +632,7 @@ window.SpotAan = {
 };
 
 loadPreferences();
+updateFullscreenUI();
 document.querySelector(`input[name="pair-count"][value="${gameConfig.defaultPairs}"]`).checked = true;
 document.querySelector(`input[name="game-mode"][value="${gameConfig.defaultMode}"]`).checked = true;
 updateModeControls();

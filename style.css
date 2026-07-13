@@ -19,6 +19,7 @@ button { touch-action: manipulation; }
 .topbar { position: relative; z-index: 5; width: min(1500px, 100%); margin: 0 auto; padding: 1rem clamp(1rem,3vw,2.5rem); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
 .brand { color: var(--ink); text-decoration: none; display: flex; align-items: center; }
 .brand-logo { display: block; width: clamp(3.4rem,5vw,4.5rem); height: clamp(3.4rem,5vw,4.5rem); object-fit: contain; filter: drop-shadow(0 5px 8px rgba(0,0,0,.28)); }
+.topbar-actions { display: flex; align-items: center; gap: .55rem; }
 .icon-button { min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--line); background: rgba(23,19,45,.65); color: var(--ink); cursor: pointer; display: flex; gap: .45rem; align-items: center; }
 main { position: relative; z-index: 1; flex: 1; width: min(1500px,100%); margin: 0 auto; }
 .screen { display: none; padding: clamp(1.2rem,3vw,3rem); min-height: calc(100vh - 8rem); animation: screen-in .3s ease both; }
@@ -135,10 +136,19 @@ dialog::backdrop { background: rgba(8,6,18,.78); backdrop-filter: blur(3px); }
 .dialog-ok, #continue-button { margin-top: 1rem; }
 kbd { padding: .12rem .35rem; background: var(--ink); color: var(--night); border-radius: 3px; }
 footer { position: relative; z-index: 2; display: flex; justify-content: center; gap: 2rem; padding: .8rem; color: #8f899d; font-size: .75rem; }
+.fullscreen-hint { position: fixed; z-index: 40; left: 50%; bottom: 1rem; width: min(650px,calc(100% - 2rem)); min-height: 58px; padding: .55rem 3.3rem .55rem .85rem; display: flex; align-items: center; justify-content: space-between; gap: .8rem; color: var(--ink); background: rgba(37,28,67,.97); border: 1px solid var(--line); border-left: 5px solid var(--cyan); box-shadow: 0 .8rem 2.5rem rgba(0,0,0,.38); transform: translateX(-50%); animation: fullscreen-hint-in .35s ease both; backdrop-filter: blur(8px); }
+.fullscreen-hint[hidden] { display: none; }
+.fullscreen-hint p { margin: 0; display: flex; align-items: center; gap: .7rem; line-height: 1.35; }
+.fullscreen-hint kbd { flex: 0 0 auto; min-width: 2rem; padding: .3rem .5rem; text-align: center; font-weight: 900; }
+.fullscreen-hint .button { flex: 0 0 auto; color: var(--black); background: var(--gold); border-color: var(--gold); }
+.fullscreen-hint-close { position: absolute; right: .35rem; top: 50%; width: 40px; height: 40px; border: 0; color: var(--muted); background: none; font-size: 1.55rem; cursor: pointer; transform: translateY(-50%); }
+.fullscreen-hint-close:focus-visible { outline: 3px solid var(--cyan); outline-offset: 0; }
+html:fullscreen .fullscreen-hint { display: none; }
 .visually-hidden { position: absolute!important; width: 1px!important; height: 1px!important; padding: 0!important; margin: -1px!important; overflow: hidden!important; clip: rect(0,0,0,0)!important; white-space: nowrap!important; border: 0!important; }
 @keyframes screen-in { from { opacity: 0; transform: translateY(8px); } }
 @keyframes spotlight { 50% { filter: brightness(1.18); transform: scale(1.025); } }
 @keyframes curtain-rise { from { transform: translateY(-45%); opacity: 0; } }
+@keyframes fullscreen-hint-in { from { opacity: 0; transform: translate(-50%,1rem); } }
 @media (min-width: 1250px) { .game-board[data-pairs="15"] { grid-template-columns: repeat(10,minmax(85px,1fr)); } }
 @media (max-width: 850px) {
   #start-screen.is-active { grid-template-columns: 1fr; gap: 2rem; }
@@ -147,7 +157,8 @@ footer { position: relative; z-index: 2; display: flex; justify-content: center;
   .game-toolbar { align-items: stretch; } .toolbar-actions { flex-direction: column; }
 }
 @media (max-width: 500px) {
-  .screen { padding: 1rem .6rem; } .sound-label { display: none; }
+  .screen { padding: 1rem .6rem; } .sound-label, .fullscreen-label { display: none; }
+  .topbar-actions { gap: .35rem; }
   .game-board { gap: .38rem; } .card-copy { padding: .35rem; min-height: 3.4rem; }
   .stats { gap: .35rem; } .stats div { min-width: 3.8rem; } .stats strong { font-size: 1.1rem; }
   .player-names { grid-template-columns: 1fr; }
@@ -158,6 +169,8 @@ footer { position: relative; z-index: 2; display: flex; justify-content: center;
   .profile { grid-template-columns: 4.5rem 4.5rem 1fr; }
   .end-stats { grid-template-columns: 1fr; } .end-stats div + div { border-top: 1px solid var(--line); }
   footer { gap: .8rem; }
+  .fullscreen-hint { bottom: .5rem; align-items: stretch; flex-direction: column; padding: .75rem 3rem .75rem .8rem; }
+  .fullscreen-hint .button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto!important; animation-duration: .01ms!important; animation-iteration-count: 1!important; transition-duration: .01ms!important; }

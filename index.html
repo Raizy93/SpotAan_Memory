@@ -15,9 +15,14 @@
     <a class="brand" href="#" data-action="home" aria-label="Naar het startscherm">
       <img class="brand-logo" src="assets/Logo - Memory.png" alt="" aria-hidden="true"><span class="visually-hidden">Spot Aan!</span>
     </a>
-    <button class="icon-button sound-toggle" type="button" aria-pressed="true" aria-label="Geluid uitzetten">
-      <span aria-hidden="true">🔊</span><span class="sound-label">Geluid aan</span>
-    </button>
+    <div class="topbar-actions">
+      <button id="fullscreen-toggle" class="icon-button" type="button" aria-pressed="false" aria-keyshortcuts="F" aria-label="Fullscreen openen">
+        <span class="fullscreen-icon" aria-hidden="true">⛶</span><span class="fullscreen-label">Fullscreen</span>
+      </button>
+      <button class="icon-button sound-toggle" type="button" aria-pressed="true" aria-label="Geluid uitzetten">
+        <span aria-hidden="true">🔊</span><span class="sound-label">Geluid aan</span>
+      </button>
+    </div>
   </header>
 
   <main id="main-content">
@@ -112,6 +117,12 @@
   </main>
 
   <footer><span>www.meesterdanny.com</span><span>meester.danny</span></footer>
+
+  <aside id="fullscreen-hint" class="fullscreen-hint" role="status" hidden>
+    <p><kbd>F</kbd><span>Druk op F voor fullscreen en de beste speelervaring.</span></p>
+    <button id="fullscreen-hint-button" class="button button-small" type="button">Ga fullscreen</button>
+    <button id="fullscreen-hint-close" class="fullscreen-hint-close" type="button" aria-label="Fullscreenmelding sluiten">×</button>
+  </aside>
 
   <dialog id="instructions-dialog">
     <div class="dialog-inner">
