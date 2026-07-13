@@ -1,0 +1,1 @@
+De gewenste .jpg-bestandsnamen staan in gameData bovenaan script.js.

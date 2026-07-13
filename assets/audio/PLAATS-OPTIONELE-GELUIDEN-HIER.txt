@@ -1,0 +1,2 @@
+Optionele namen: flip.mp3, match.mp3, mismatch.mp3 en finish.mp3.
+Zonder deze bestanden gebruikt de game korte, ingebouwde tonen.
