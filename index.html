@@ -79,7 +79,21 @@
         <div id="player-two-score" class="player-score"><span class="player-name">Speler 2</span><strong>0</strong><small>paren</small></div>
       </section>
       <p id="game-status" class="visually-hidden" aria-live="polite"></p>
-      <div id="game-board" class="game-board" role="grid" aria-label="Memorykaarten"></div>
+      <div id="game-play-area" class="game-play-area">
+        <div class="learning-hint-slot">
+          <aside id="learning-hint" class="learning-hint" aria-label="Zoekhulp" hidden>
+            <span class="learning-hint-icon" aria-hidden="true">?</span>
+            <div class="learning-hint-body">
+              <span id="learning-hint-context" class="learning-hint-context"></span>
+              <div class="learning-hint-row">
+                <button id="learning-hint-button" class="button learning-hint-button" type="button" aria-expanded="false" aria-controls="learning-hint-answer">Hint</button>
+                <p id="learning-hint-answer" hidden><span id="learning-hint-label"></span> <strong id="learning-hint-target"></strong></p>
+              </div>
+            </div>
+          </aside>
+        </div>
+        <div id="game-board" class="game-board" role="grid" aria-label="Memorykaarten"></div>
+      </div>
     </section>
 
     <section id="overview-screen" class="screen" aria-labelledby="overview-title">
@@ -128,7 +142,7 @@
     <div class="dialog-inner">
       <button class="dialog-close" type="button" aria-label="Sluiten">×</button>
       <p class="eyebrow">Zo werkt het</p><h2>Vind boek en schrijver</h2>
-      <ol><li>Draai twee kaarten om.</li><li>Zoek de schrijver die bij het boek hoort.</li><li>Een goed paar blijft open en geeft een boekenweetje.</li></ol>
+      <ol><li>Draai een kaart om.</li><li>Weet je het even niet? Druk op <strong>Hint</strong> om te zien welk boek of welke schrijver je zoekt.</li><li>Vind de juiste tweede kaart. Een goed paar blijft open en geeft een boekenweetje.</li></ol>
       <p><strong>1 tegen 1:</strong> bij een goed paar krijg je een punt en blijf je aan de beurt. Bij een fout paar gaat de beurt naar de andere speler.</p>
       <p>De timer start pas bij je eerste kaart. Bedien kaarten met muis, aanraking, <kbd>Enter</kbd> of de spatiebalk.</p>
       <button class="button button-primary dialog-ok" type="button">Begrepen</button>

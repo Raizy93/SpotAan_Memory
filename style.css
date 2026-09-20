@@ -70,7 +70,22 @@ main { position: relative; z-index: 1; flex: 1; width: min(1500px,100%); margin:
 .player-score .player-name { overflow: hidden; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 .player-score strong { grid-row: 1/3; grid-column: 2; color: var(--gold); font-size: 1.7rem; }
 .player-score small { color: var(--muted); font-size: .7rem; text-transform: uppercase; }
-.game-board { display: grid; grid-template-columns: repeat(6, minmax(90px,1fr)); gap: clamp(.5rem,1vw,.9rem); max-width: 920px; margin: auto; perspective: 1000px; -webkit-perspective: 1000px; }
+.game-play-area { display: grid; grid-template-columns: minmax(210px,332px) minmax(0,920px); align-items: start; justify-content: start; gap: clamp(1rem,2vw,1.8rem); width: 100%; margin: 0; }
+.game-play-area[data-pairs="15"] { grid-template-columns: minmax(210px,260px) minmax(0,1fr); }
+.learning-hint-slot { position: relative; width: 210px; height: 350px; }
+.learning-hint { position: absolute; inset: 0; padding: .9rem; display: flex; flex-direction: column; align-items: flex-start; gap: .7rem; overflow: visible; color: var(--black); background: var(--paper); border-top: 6px solid var(--gold); box-shadow: .45rem .45rem 0 rgba(0,0,0,.16); }
+.learning-hint[hidden] { display: none; }
+.learning-hint-icon { flex: 0 0 auto; display: grid; place-items: center; width: 2.7rem; height: 2.7rem; color: var(--night); background: var(--gold); font-size: 1.55rem; font-weight: 1000; clip-path: polygon(5% 12%,92% 0,100% 88%,12% 100%); }
+.learning-hint-body { flex: 1 1 auto; min-width: 0; }
+.learning-hint-context { display: block; color: #4f484d; font-size: clamp(.95rem,2vw,1.08rem); font-weight: 800; line-height: 1.3; }
+.learning-hint-row { display: flex; align-items: flex-start; flex-direction: column; gap: .7rem; margin-top: .65rem; }
+.learning-hint-button { min-height: 42px; padding: .42rem .9rem; color: var(--night); background: var(--gold); border-color: var(--black); box-shadow: .18rem .18rem 0 rgba(0,0,0,.18); }
+.learning-hint-button:hover { transform: translateY(-1px); }
+.learning-hint-button[aria-expanded="true"] { color: var(--paper); background: var(--night); }
+.learning-hint p { margin: 0; font-size: clamp(1rem,2.2vw,1.28rem); line-height: 1.25; }
+.learning-hint-answer[hidden] { display: none; }
+.learning-hint strong { color: #9b3f2d; }
+.game-board { display: grid; grid-template-columns: repeat(6, minmax(90px,1fr)); gap: clamp(.5rem,1vw,.9rem); width: 100%; max-width: 920px; margin: 0; perspective: 1000px; -webkit-perspective: 1000px; }
 .game-board[data-pairs="15"] { max-width: 1350px; }
 .memory-card { position: relative; min-width: 0; aspect-ratio: .74; border: 0; padding: 0; background: none; cursor: pointer; border-radius: var(--radius); perspective: 900px; -webkit-perspective: 900px; isolation: isolate; }
 .memory-card:focus-visible { outline: 4px solid var(--cyan); outline-offset: 3px; }
@@ -154,6 +169,10 @@ html:fullscreen .fullscreen-hint { display: none; }
 @media (max-width: 850px) {
   #start-screen.is-active { grid-template-columns: 1fr; gap: 2rem; }
   .hero { text-align: center; } .hero-logo { margin-inline: auto; } .intro { margin-inline: auto; }
+  .game-play-area, .game-play-area[data-pairs="15"] { display: block; max-width: 920px; }
+  .learning-hint-slot { width: 100%; max-width: 740px; height: 108px; margin: 0 auto 1.2rem; }
+  .learning-hint { flex-direction: row; align-items: center; padding: .7rem 1rem; border-top: 0; border-left: 6px solid var(--gold); }
+  .learning-hint-row { align-items: center; flex-direction: row; flex-wrap: wrap; gap: .55rem .85rem; margin-top: .35rem; }
   .game-board { grid-template-columns: repeat(4,minmax(70px,1fr)); }
   .game-toolbar { align-items: stretch; } .toolbar-actions { flex-direction: column; }
 }
@@ -165,6 +184,9 @@ html:fullscreen .fullscreen-hint { display: none; }
   .player-names { grid-template-columns: 1fr; }
   .versus-scoreboard { grid-template-columns: 1fr 1fr; }
   .versus-scoreboard > p { grid-column: 1/-1; grid-row: 1; border-bottom: 1px solid var(--line); }
+  .learning-hint-slot { height: 150px; margin-inline: .2rem; }
+  .learning-hint { padding: .6rem .7rem; }
+  .learning-hint-icon { width: 2.3rem; height: 2.3rem; }
   .toolbar-actions .button { font-size: .75rem; } .secondary-actions { grid-template-columns: 1fr; }
   .section-heading { align-items: flex-start; flex-direction: column; }
   .profile { grid-template-columns: 4.5rem 4.5rem 1fr; }

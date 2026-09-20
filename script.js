@@ -11,7 +11,8 @@ const gameConfig = {
   useSound: true,
   showTimer: true,
   showMoves: true,
-  showBestScore: true
+  showBestScore: true,
+  showLearningHints: true
 };
 
 const audioFiles = {
@@ -83,6 +84,13 @@ const elements = {
   versusScoreboard: document.querySelector("#versus-scoreboard"),
   playerScores: [document.querySelector("#player-one-score"), document.querySelector("#player-two-score")],
   turnIndicator: document.querySelector("#turn-indicator"),
+  gamePlayArea: document.querySelector("#game-play-area"),
+  learningHint: document.querySelector("#learning-hint"),
+  learningHintContext: document.querySelector("#learning-hint-context"),
+  learningHintButton: document.querySelector("#learning-hint-button"),
+  learningHintAnswer: document.querySelector("#learning-hint-answer"),
+  learningHintLabel: document.querySelector("#learning-hint-label"),
+  learningHintTarget: document.querySelector("#learning-hint-target"),
   status: document.querySelector("#game-status"),
   bestScore: document.querySelector("#best-score"),
   factDialog: document.querySelector("#fact-dialog"),
@@ -141,6 +149,7 @@ function startGame(pairCount = state.pairCount, mode = state.mode) {
   state.matches = 0;
   state.seconds = 0;
   state.timerStarted = false;
+  hideLearningHint();
   renderBoard();
   updateStats();
   updatePlayerUI();
@@ -152,6 +161,7 @@ function startGame(pairCount = state.pairCount, mode = state.mode) {
 function renderBoard() {
   elements.board.replaceChildren();
   elements.board.dataset.pairs = String(state.pairCount);
+  elements.gamePlayArea.dataset.pairs = String(state.pairCount);
   const fragment = document.createDocumentFragment();
   state.cards.forEach((cardData, index) => fragment.append(createCard(cardData, index)));
   elements.board.append(fragment);
@@ -208,7 +218,7 @@ function flipCard(card) {
   revealCard(card);
   if (!state.firstCard) {
     state.firstCard = card;
-    elements.status.textContent = "Eerste kaart geopend. Kies nu een tweede kaart.";
+    showLearningHint(card);
     return;
   }
   state.secondCard = card;
@@ -236,6 +246,50 @@ function concealCard(card) {
 
 function getCardData(card) {
   return state.cards.find((item) => item.uid === card.dataset.uid);
+}
+
+function showLearningHint(card) {
+  if (!gameConfig.showLearningHints) {
+    hideLearningHint();
+    elements.status.textContent = "Eerste kaart geopend. Kies nu een tweede kaart.";
+    return;
+  }
+  const data = getCardData(card);
+  const openedSentence = data.type === "book"
+    ? `Je hebt het boek ‘${data.pair.book}’ omgedraaid.`
+    : `Je hebt de kaart van schrijver ${data.pair.author} omgedraaid.`;
+  const targetSentence = data.type === "book"
+    ? "De schrijver die bij dit boek hoort, is"
+    : "Het boek dat bij deze schrijver hoort, is";
+  const target = data.type === "book" ? `${data.pair.author}.` : `‘${data.pair.book}’.`;
+  elements.learningHintContext.textContent = openedSentence;
+  elements.learningHintLabel.textContent = targetSentence;
+  elements.learningHintTarget.textContent = target;
+  elements.learningHintAnswer.hidden = true;
+  elements.learningHintButton.setAttribute("aria-expanded", "false");
+  elements.learningHintButton.textContent = "Hint";
+  elements.learningHint.hidden = false;
+  elements.status.textContent = `${openedSentence} Kies een tweede kaart of gebruik de knop Hint.`;
+}
+
+function toggleLearningHint() {
+  const shouldShow = elements.learningHintAnswer.hidden;
+  elements.learningHintAnswer.hidden = !shouldShow;
+  elements.learningHintButton.setAttribute("aria-expanded", String(shouldShow));
+  elements.learningHintButton.textContent = shouldShow ? "Hint verbergen" : "Hint";
+  elements.status.textContent = shouldShow
+    ? `${elements.learningHintLabel.textContent} ${elements.learningHintTarget.textContent}`
+    : "Hint verborgen. Kies de tweede kaart.";
+}
+
+function hideLearningHint() {
+  elements.learningHint.hidden = true;
+  elements.learningHintAnswer.hidden = true;
+  elements.learningHintButton.setAttribute("aria-expanded", "false");
+  elements.learningHintButton.textContent = "Hint";
+  elements.learningHintContext.textContent = "";
+  elements.learningHintLabel.textContent = "";
+  elements.learningHintTarget.textContent = "";
 }
 
 function handleMatch() {
@@ -288,6 +342,7 @@ function resetTurn() {
   state.firstCard = null;
   state.secondCard = null;
   state.locked = false;
+  hideLearningHint();
 }
 
 function switchPlayer() {
@@ -572,6 +627,7 @@ document.querySelector("#continue-button").addEventListener("click", () => eleme
 document.querySelectorAll('input[name="pair-count"]').forEach((input) => input.addEventListener("change", updateBestScore));
 document.querySelectorAll('input[name="game-mode"]').forEach((input) => input.addEventListener("change", updateModeControls));
 elements.soundButtons.forEach((button) => button.addEventListener("click", toggleSound));
+elements.learningHintButton.addEventListener("click", toggleLearningHint);
 elements.fullscreenToggle.addEventListener("click", toggleFullscreen);
 elements.fullscreenHintButton.addEventListener("click", toggleFullscreen);
 elements.fullscreenHintClose.addEventListener("click", () => {
