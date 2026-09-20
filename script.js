@@ -86,6 +86,8 @@ const elements = {
   turnIndicator: document.querySelector("#turn-indicator"),
   gamePlayArea: document.querySelector("#game-play-area"),
   learningHint: document.querySelector("#learning-hint"),
+  learningHintPreview: document.querySelector("#learning-hint-preview"),
+  learningHintImage: document.querySelector("#learning-hint-image"),
   learningHintContext: document.querySelector("#learning-hint-context"),
   learningHintButton: document.querySelector("#learning-hint-button"),
   learningHintAnswer: document.querySelector("#learning-hint-answer"),
@@ -262,6 +264,11 @@ function showLearningHint(card) {
     ? "De schrijver die bij dit boek hoort, is"
     : "Het boek dat bij deze schrijver hoort, is";
   const target = data.type === "book" ? `${data.pair.author}.` : `‘${data.pair.book}’.`;
+  elements.learningHintImage.src = data.type === "book" ? data.pair.bookImage : data.pair.authorImage;
+  elements.learningHintImage.alt = data.type === "book"
+    ? `De omgedraaide boekcover van ${data.pair.book}`
+    : `De omgedraaide foto van schrijver ${data.pair.author}`;
+  elements.learningHintPreview.hidden = false;
   elements.learningHintContext.textContent = openedSentence;
   elements.learningHintLabel.textContent = targetSentence;
   elements.learningHintTarget.textContent = target;
@@ -284,6 +291,9 @@ function toggleLearningHint() {
 
 function hideLearningHint() {
   elements.learningHint.hidden = true;
+  elements.learningHintPreview.hidden = true;
+  elements.learningHintImage.removeAttribute("src");
+  elements.learningHintImage.alt = "";
   elements.learningHintAnswer.hidden = true;
   elements.learningHintButton.setAttribute("aria-expanded", "false");
   elements.learningHintButton.textContent = "Hint";
@@ -628,6 +638,9 @@ document.querySelectorAll('input[name="pair-count"]').forEach((input) => input.a
 document.querySelectorAll('input[name="game-mode"]').forEach((input) => input.addEventListener("change", updateModeControls));
 elements.soundButtons.forEach((button) => button.addEventListener("click", toggleSound));
 elements.learningHintButton.addEventListener("click", toggleLearningHint);
+elements.learningHintImage.addEventListener("error", () => {
+  elements.learningHintPreview.hidden = true;
+});
 elements.fullscreenToggle.addEventListener("click", toggleFullscreen);
 elements.fullscreenHintButton.addEventListener("click", toggleFullscreen);
 elements.fullscreenHintClose.addEventListener("click", () => {
